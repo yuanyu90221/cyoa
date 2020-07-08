@@ -3,12 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 
 	"github.com/yuanyu90221/cyoa"
 )
 
 func main() {
+	port := flag.Int("port", 9090, "the port start the CYOA web application on")
 	filename := flag.String("file", "gopher.json", "the JSON file with CYOA story")
 	flag.Parse()
 	fmt.Printf("Using the story in %s.\n", *filename)
@@ -23,5 +26,9 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("%+v\n", story)
+	// fmt.Printf("%+v\n", story)
+
+	h := cyoa.NewHandler(story)
+	fmt.Printf("Starting the server at: %d\n", *port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), h))
 }
